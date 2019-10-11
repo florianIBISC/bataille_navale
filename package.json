@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/florianIBISC/bataille_navale/issues"
   },
-  "homepage": "https://github.com/florianIBISC/bataille_navale#readme"
+  "homepage": "https://github.com/florianIBISC/bataille_navale#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }

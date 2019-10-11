@@ -1,0 +1,28 @@
+git add *
+
+git commit –m “Description du commit”
+
+git status
+
+git push origin master
+
+//voir les branche
+git branch
+
+// créer une branche et y accéder
+git checkout -b <nom-branche>
+
+//Pour passer simplement d’une branche à une autre, utilisez:
+git checkout <nom-branche>
+
+//Pour fusionner toutes les modifications présentes sur le dépôt distant dans le répertoire de travail local, la commande pull est utilisée
+git pull
+
+//La commande git merge est utilisée pour fusionner une branche dans la branche active.
+git merge <nom-branche>
+
+//La commande git diff permet de lister les conflits. Pour visualiser les conflits d’un fichier, utilisez
+git diff --base <nom-fichier>
+
+//Git fetch permet à un utilisateur d’extraire tous les fichiers du dépôt distant qui ne sont pas actuellement dans le répertoire de travail local. 
+git fetch origin
