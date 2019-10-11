@@ -1,0 +1,22 @@
+{
+  "name": "bataille_navale",
+  "version": "1.0.0",
+  "description": "API RESTful battleship",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/florianIBISC/bataille_navale.git"
+  },
+  "keywords": [
+    "battleship"
+  ],
+  "author": "Ely Chappe - Adjay Sundara - Florian Michaud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/florianIBISC/bataille_navale/issues"
+  },
+  "homepage": "https://github.com/florianIBISC/bataille_navale#readme"
+}
