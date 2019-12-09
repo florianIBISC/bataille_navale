@@ -1,29 +1,89 @@
+//----Import
 const mongoose = require('mongoose');
-let model = require('./model');
-mongoose.connect('mongodb://localhost:27017/batailleNavale',{useNewUrlParser:true});
+ObjectId = mongoose.Types.ObjectId;
+const bcrypt = require('bcrypt');
+const jwtutils = require('./jwt.utils');
+const models = require('./model');
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const PASSWORD_REGEX = /^(?=.*\d).{4,8}$/;
 
+//----Router
 module.exports = {
-    inscription: (req,res)=>{
-        console.log('PROCESS');
-        return new Promise((resolve,reject)=>{
-            model.find({pseudo:req.body.pseudo}).then(utilisateur =>{
-                console.log(utilisateur.length);
-                if(utilisateur.length == 0){
-                    let nouveauUtilisateur = new model({
+
+    // s'enregistrer
+    register: (req, res) => {
+        return new Promise((resolve, reject) => {
+        models.find({ pseudo: req.body.pseudo }).then(user => {
+            if (user.length == 0) {
+                bcrypt.hash(req.body.password, 5, function (err, bcryptedPassword) {
+                    let newUser = new models({
+                        email: req.body.email,
+                        pseudo: req.body.pseudo,
+                        password: bcryptedPassword,
                         nom: req.body.nom,
                         prenom: req.body.prenom,
-                        pseudo: req.body.pseudo,
-                        password: req.body.password,
-                        email: req.body.email,
                         age: req.body.age,
-                    });
-                    console.log(nouveauUtilisateur.pseudo);
-                    resolve(nouveauUtilisateur.save().then(res.send(nouveauUtilisateur)));
-                }
-                else{
-                    reject({'Erreur': 'Utilisateur déjà existant'});
-                }
-            })
+                        score: 0,
+                    })
+                    if (req.body.email == null || req.body.pseudo == null || req.body.password == null
+                        || req.body.age ==null || req.body.nom ==null || req.body.prenom == null) {
+                        reject({ 'Erreur': 'Paramètre manquant' });
+                    }
+                    else if (req.body.pseudo.length >= 13 || req.body.pseudo.length <= 4) {
+                        reject({ 'Erreur': 'Nombre de caractère pour l\' utilisateur doit etre compris en 5 et 13' });
+                    }
+                    else if (!EMAIL_REGEX.test(req.body.email)) {
+                        reject({ 'Erreur': 'Email invalide' });
+                    }
+                    else if (!PASSWORD_REGEX.test(req.body.password)) {
+                        reject({ 'Erreur': 'Mot de passe invalide ! taille doit etre entre 4 et 8 et contenir au moins 1 chiffre' });
+                    }
+                    else {
+                        resolve(newUser.save().then(/*res.send(newUser))*/newUser));
+                    }
+                })
+            }
+            else {
+                reject({ 'Erreur': 'Utilisateur déjà existant' });
+            }
+
+
+        })
+    })},
+
+    //se connecter
+    login: (req, res) => {
+        return new Promise((resolve, reject) => {
+            models.find({ pseudo: req.body.pseudo }).then(user => {
+                // si l'user existe
+                if (user.length == 1) {
+                    bcrypt.compare(req.body.password, user[0].password, function (errBycrypt, resBycrypt) {
+                        // est que le mdp est correct
+                        if (resBycrypt) {                           
+                            resolve( {'token': jwtutils.generateTokenForUser(user[0])})
+                            // est le mdp est incorrect
+                        } else {
+                            reject({ 'Erreur': 'Utilisateur ou mot de passe invalide' });                           
+                        }
+                    })
+                    // si l'user n'existe pas     
+                } else {
+                    reject({ 'Erreur': 'Utilisateur ou mot de passe invalide' });
+            }});
+        })
+    },
+    getuserprofile: (req, res) => {
+        return new Promise((resolve, reject) => {
+            let headerAuth = req.headers['authorization'];
+            let userId = jwtutils.getUserId(headerAuth);
+            if (userId < 0) {
+                reject({ 'Erreur': 'mauvais token' });
+            }
+            else {
+                resolve(userId);
+            }
         })
     }
+
+
 }

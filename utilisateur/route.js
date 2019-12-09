@@ -1,10 +1,13 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var action = require('./action');
+const app = require('express').Router();
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+const action = require('./action');
 
-app.post('/inscription', action.inscription);
 
-app.listen('3030',()=>{
-    console.log('Hello World !');
-})
+app.post('/users/register',action.register);
+
+app.post('/users/login',action.login);
+
+app.get('/users/decrypt',action.decrypt);
+
+module.exports = app;

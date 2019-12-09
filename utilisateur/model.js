@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-let utilisateur = new mongoose.Schema({
+var utilisateur = new Schema({
     nom: String,
     prenom: String,
     pseudo: String,
@@ -8,7 +9,7 @@ let utilisateur = new mongoose.Schema({
     email: String,
     age: Number,
     token: String,
+    score: Number,
 });
 
-let User = mongoose.model('utilisateur',utilisateur);
-module.exports= utilisateur;
+module.exports = mongoose.model('Utilisateur',utilisateur);
