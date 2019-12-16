@@ -6,7 +6,15 @@ const model = require("./model");
 module.exports = {
   creerSalon: (req, res) => {
     return new Promise((resolve, reject) => {
-      if (req.headers.authorization != null) {
+      if(req.headers.authorization == null){
+        reject({'Erreur':'Echec d\'authentification',
+      'CodeHttp':401});
+      }
+      else if(req.body.title == undefined){
+        reject({'Erreur':'Titre du salon manquant',
+      'CodeHttp':400});
+      }
+      else{
         let nomSalon = req.body.title;
         let p1 = new Array(10);
         for (var i = 0; i < 10; i++) {
@@ -15,7 +23,8 @@ module.exports = {
         let p2 = p1.slice(0);
         model.find({ title: nomSalon }).then(salon => {
           if (salon.length != 0) {
-            reject({ Erreur: "Nom de salon déjà pris !" });
+            reject({ Erreur: "Nom de salon déjà pris !" ,
+            'CodeHttp':400});
           }
           else{
               let salon = new model({
@@ -28,26 +37,25 @@ module.exports = {
                   salon
                     .save()
                     .then(()=>{res.send(salon)})
-                    .catch(()=>{console.log("erreur de sauvegarde")})
+                    .catch(()=>{reject({ Erreur: "Problème interne" ,
+                    'CodeHttp':500})})
                 );
               }
         })}      
-      else {
-        reject({ "Erreur ": " Vous etes pas authentifié" });
-      }
     });
 },
     afficherSalon: (req,res)=>{
         return new Promise((resolve,reject)=>{
             model.find({usernameUtilisateur2:undefined}).then((salons)=>{
                 if(salons.length > 0){
-                    resolve(salons);
+                    resolve({'Salons':salons,'CodeHttp':200});
                 }
                 else{
-                    reject('Il n\'y a pas de salon');
+                  resolve({'Salons':'Il n'y a aucun salon','CodeHttp':204})
                 }
             }).catch((err)=>{
-                reject({'Erreur': err})
+                reject({'Erreur': 'Problème inetrne',
+                'CodeHttp':500})
             });
         })
     },
@@ -61,46 +69,24 @@ module.exports = {
           if(salon.usernameUtilisateur2 == undefined){
             console.log(username);
             salon.usernameUtilisateur2 = username;
-            resolve(model.findOneAndUpdate({title: req.body.title},{$set: {usernameUtilisateur2: username}})
-            .then(salon=>salon).catch(()=>{console.log("Process rejoindreSalon - erreur de sauvegarde")}));
+            resolve({model.findOneAndUpdate({title: req.body.title},{$set: {usernameUtilisateur2: username}}})
+            .then(salon=>salon).catch(()=>{reject({'Erreur': 'Problème inetrne',
+            'CodeHttp':500})}));
 
           }
           else if(username == -1 || username==undefined){
-            reject({'Erreur':'Il y a un problème avec votre session tentez de vous reconnecter'})
+            reject({'Erreur':'Il y a un problème avec votre session tentez de vous reconnecter',
+            'CodeHttp':401})
           }
           else if(salon.usernameUtilisateur2.length>0){
-            reject({'Erreur':'Salon complet !'})
+            reject({'Erreur':'Salon complet !',
+            'CodeHttp':409})
           }
           else{
-            reject({'Erreur':'Veuillez vous rapprochez de l\'administrateur'})
+            reject({'Erreur':'Veuillez vous rapprochez de l\'administrateur',
+            'CodeHttp':500})
           }
         })
       })
     }
-
-  /*rejoindreSalon: (req, res) => {
-    return new Promise((resolve, reject) => {
-      model
-        .find({ title: req.body.title })
-        .then(salon => {
-          let token = req.headers["authorization"];
-          let username = jwutils.getUserId(token).pseudo;
-
-          if (
-            username != salon.usernameUtilisateur1 ||
-            username != salon.usernameUtilisateur1
-          ) {
-            reject({ Erreur: "Ce n'est pas votre salon" });
-          } else if (username == salon.usernameUtilisateur1) {
-            let salonEcranAdversaireCache = Object.assign({}, salon);
-            delete salonEcranAdversaireCache.plateau2;
-            resolve(res.send(salonEcranAdversaireCache));
-          } else if (username == salon.usernameUtilisateur2) {
-            let salonEcranAdversaireCache = Object.assign({}, salon);
-            delete salonEcranAdversaireCache.plateau1;
-            resolve(res.send(salonEcranAdversaireCache));
-          }
-        })
-        .catch(err => reject({ Erreur: "Pas de salon comportant ce titre" }));
-    });*/
 }

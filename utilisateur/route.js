@@ -6,7 +6,7 @@ const action = require('./action');
 
 app.post('/users/register',action.register);
 
-app.post('/users/login',action.login);
+app.get('/users/login',action.login);
 
 app.get('/users/decrypt',action.decrypt);
 
