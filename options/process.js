@@ -9,12 +9,12 @@ module.exports = {
           let token = req.headers["authorization"];
           token = jwutils.getUserId(token);
           if(token == null || token == undefined || token==-1){
-              reject({'Erreur':'Votre session a expiré'});
+              reject({'Erreur':'Votre session a expiré','CodeHTTP':401});
           }
           else{
               modelUser.find({}, function(err,utilisateurs){
                   if(err){
-                      reject({'Erreur':'Il y a un problème avec la connexion à la DB'})
+                      reject({'Erreur':'Problème interne','CodeHTTP':500})
                   } else{
                       const sortByScore = (map,compareSc) => (a,b) => compareSc(map(a),map(b));
                       const byScore = (a,b) => b-a;
@@ -28,7 +28,7 @@ module.exports = {
                           obj['score'] = u.score;
                           return obj;
                       });
-                      resolve(utilisateursMap);
+                      resolve({'Utilisateurs':utilisateursMap,'CodeHTTP':200});
                   }
               });
           }

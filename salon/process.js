@@ -10,7 +10,7 @@ module.exports = {
         reject({'Erreur':'Echec d\'authentification',
       'CodeHttp':401});
       }
-      else if(req.body.title == undefined){
+      else if(req.body.title == null || req.body.title.length==0){
         reject({'Erreur':'Titre du salon manquant',
       'CodeHttp':400});
       }
@@ -51,7 +51,7 @@ module.exports = {
                     resolve({'Salons':salons,'CodeHttp':200});
                 }
                 else{
-                  resolve({'Salons':'Il n'y a aucun salon','CodeHttp':204})
+                  resolve({'Salons':'Il n\'y a aucun salon','CodeHttp':204})
                 }
             }).catch((err)=>{
                 reject({'Erreur': 'Problème inetrne',
@@ -62,31 +62,45 @@ module.exports = {
 
     rejoindreSalon: (req,res) => {
       return new Promise((resolve,reject)=>{
-        model.find({title: req.body.title}).then(salon=>{
+        let token = req.headers["authorization"];
+        let username = jwutils.getUserId(token).pseudo;
+        model.findOneAndUpdate({title: req.body.title,usernameUtilisateur2: null}
+          ,{usernameUtilisateur2: username}).then(salon=>{
+            console.log('On est dans le .then - salons : '+salon);
+            resolve({'Salons':salon,'CodeHTTP':200});
+          }).catch((err)=>{
+            console.log('.catch de rejoindreSalon');
+          })
+        /*model.find({title: req.body.title}).then(salon=>{
           let token = req.headers["authorization"];
           let username = jwutils.getUserId(token).pseudo;
           console.log("Process rejoindreSalon - salon.usernameUtilisateur2 : "+salon.usernameUtilisateur2);
-          if(salon.usernameUtilisateur2 == undefined){
+          if(salon.usernameUtilisateur2 == null){
             console.log(username);
             salon.usernameUtilisateur2 = username;
-            resolve({model.findOneAndUpdate({title: req.body.title},{$set: {usernameUtilisateur2: username}}})
-            .then(salon=>salon).catch(()=>{reject({'Erreur': 'Problème inetrne',
-            'CodeHttp':500})}));
-
-          }
+            model.findOneAndUpdate({title: req.body.title},{$set: {usernameUtilisateur2: username}})
+            .then(salon=>{
+              console.log('On est dans le .then - salons : '+salon);
+              resolve({'Salons':salon,'CodeHTTP':200})
+            })
+            /*.catch((err)=>{
+              console.log('Problème .catch');
+              reject({'Erreur':'Problème interne','CodeHttp':500})
+            })
+          //}
           else if(username == -1 || username==undefined){
             reject({'Erreur':'Il y a un problème avec votre session tentez de vous reconnecter',
             'CodeHttp':401})
           }
-          else if(salon.usernameUtilisateur2.length>0){
+          else /*if(salon.usernameUtilisateur2.length != null/{
             reject({'Erreur':'Salon complet !',
-            'CodeHttp':409})
+            'CodeHttp':400})
           }
-          else{
+          /*else{
             reject({'Erreur':'Veuillez vous rapprochez de l\'administrateur',
             'CodeHttp':500})
           }
-        })
+        })*/
       })
     }
 }

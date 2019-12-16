@@ -27,24 +27,29 @@ module.exports = {
                     })
                     if (req.body.email == null || req.body.pseudo == null || req.body.password == null
                         || req.body.age ==null || req.body.nom ==null || req.body.prenom == null) {
-                        reject({ 'Erreur': 'Paramètre manquant' });
+                        reject({ 'Erreur': 'Paramètre manquant','CodeHTTP':400 });
                     }
                     else if (req.body.pseudo.length >= 13 || req.body.pseudo.length <= 4) {
-                        reject({ 'Erreur': 'Nombre de caractère pour l\' utilisateur doit etre compris en 5 et 13' });
+                        reject({ 'Erreur': 'Nombre de caractère pour l\' utilisateur doit etre compris en 5 et 13'
+                        ,'CodeHTTP':400 });
                     }
                     else if (!EMAIL_REGEX.test(req.body.email)) {
-                        reject({ 'Erreur': 'Email invalide' });
+                        reject({ 'Erreur': 'Email invalide' 
+                        ,'CodeHTTP':400});
                     }
                     else if (!PASSWORD_REGEX.test(req.body.password)) {
-                        reject({ 'Erreur': 'Mot de passe invalide ! taille doit etre entre 4 et 8 et contenir au moins 1 chiffre' });
+                        reject({ 'Erreur': 'Mot de passe invalide ! taille doit etre entre 4 et 8 et contenir au moins 1 chiffre'
+                        ,'CodeHTTP':400 });
                     }
                     else {
-                        resolve(newUser.save().then(/*res.send(newUser))*/newUser));
+                        newUser.save().then(newUser=>{
+                            resolve({'Utilisateur':'Inscris avec succès','CodeHTTP':201})
+                        })
                     }
                 })
             }
             else {
-                reject({ 'Erreur': 'Utilisateur déjà existant' });
+                reject({ 'Erreur': 'Utilisateur déjà existant','CodeHTTP':400 });
             }
 
 
@@ -60,15 +65,17 @@ module.exports = {
                     bcrypt.compare(req.body.password, user[0].password, function (errBycrypt, resBycrypt) {
                         // est que le mdp est correct
                         if (resBycrypt) {                           
-                            resolve( {'token': jwtutils.generateTokenForUser(user[0])})
+                            resolve( {'token': jwtutils.generateTokenForUser(user[0]),
+                        'CodeHTTP':200})
                             // est le mdp est incorrect
                         } else {
-                            reject({ 'Erreur': 'Utilisateur ou mot de passe invalide' });                           
+                            reject({ 'Erreur': 'Utilisateur ou mot de passe invalide' ,
+                        'CodeHTTP':400});                           
                         }
                     })
                     // si l'user n'existe pas     
                 } else {
-                    reject({ 'Erreur': 'Utilisateur ou mot de passe invalide' });
+                    reject({ 'Erreur': 'Utilisateur ou mot de passe invalide','CodeHTTP':400 });
             }});
         })
     },
@@ -77,10 +84,11 @@ module.exports = {
             let headerAuth = req.headers['authorization'];
             let userId = jwtutils.getUserId(headerAuth);
             if (userId < 0) {
-                reject({ 'Erreur': 'mauvais token' });
+                reject({ 'Erreur': 'mauvais token','CodeHTTP':400 });
             }
             else {
-                resolve(userId);
+                resolve({'Id':userId,
+                'CodeHTTP':200});
             }
         })
     }

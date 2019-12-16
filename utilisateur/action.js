@@ -5,33 +5,29 @@ module.exports = {
     register(req, res, body) {
         process.register(req, res, body)
         .then((result) => {
-            res.status(200).json(result)
+            res.status(result.CodeHTTP).json(result.Utilisateur)
         })
         .catch((err) => {
-            res.status(400).json(err)
+            res.status(err.CodeHTTP).json(err.Erreur)
         })
     },
 
     login(req, res) {
         process.login(req, res)
         .then((result) => {
-            res.status(200).json(result)
+            res.status(result.CodeHTTP).json(result.token)
         })
         .catch((err) => {
-            res.status(400).json(err)
+            res.status(err.CodeHTTP).json(err.Erreur)
         })
-        .catch((err) => {
-            res.status(403).json(err)
-        })
-        
     },
     decrypt(req, res) {
         process.getuserprofile(req, res)
         .then((result) => {
-            res.status(200).json(result)
+            res.status(result.CodeHTTP).json(result.Id)
         })
         .catch((err) => {
-            res.status(400).json(err)
+            res.status(err.CodeHTTP).json(err.Erreur)
         })
 
     }
