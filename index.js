@@ -19,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/',require('./salon/route'));
 app.use('/',require('./utilisateur/route'));
+app.use('/',require('./options/route'));
 
 app.listen(8080,()=>{
     console.log('Hello World !');
