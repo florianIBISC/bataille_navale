@@ -5,7 +5,7 @@ const action = require('./action');
 const jwutils = require("../utilisateur/jwt.utils");
 
 app.post('/creersalon',action.creerSalon);
-app.get('/rejoindresalon',action.rejoindreSalon);
+app.put('/rejoindresalon',action.rejoindreSalon);
 app.get('/affichersalons',action.afficherSalons);
 
 

@@ -19,8 +19,6 @@ module.exports = {
         process.creerSalon(req,res,body)
         .then((result)=>{
             res.status(201).json(result);
-            user1 = req.body.pseudo;
-            this.miseEnAttente();
         })
          .catch((err)=>{
              res.status(err.CodeHttp).send(err.Erreur)
@@ -39,12 +37,12 @@ module.exports = {
     rejoindreSalon(req,res,body){
         process.rejoindreSalon(req,res,body)
         .then((result)=>{
-            console.log('Salon, process - code HTTP '+result.CodeHttp);
-            res.status(result.CodeHttp).json(result.Salons);
-            this.user2 = req.body.pseudo;
+            console.log('Salon action - code HTTP '+result.CodeHttp);
+            console.log('Salon action - objet salon '+result.Salon);
+            res.status(result.CodeHttp).json(result.Salon);
         })
         .catch((err)=>{
-            console.log('Salon, process erreur - code HTTP '+err.CodeHttp);
+            console.log('Salon action erreur - code HTTP '+err.CodeHttp);
             res.status(err.CodeHttp).json(err.Erreur);
         })
     }

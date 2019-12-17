@@ -59,8 +59,62 @@ module.exports = {
             });
         })
     },
-
     rejoindreSalon: (req,res) => {
+      return new Promise((resolve,reject)=>{
+
+        console.log('Début de la promesse');
+        let token = req.headers["authorization"];
+        let username = jwutils.getUserId(token).pseudo;
+
+        if(username == -1 || username == undefined || username == null){
+          reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+        }
+
+        model.find({title: req.body.title},function(_err,salon){
+          if(_err){
+            reject({'Erreur':'Problème interne','CodeHttp':500});
+          }
+          console.log('Début du .find');
+          console.log('...'+salon[0].usernameUtilisateur2);
+          let salonSansJoueur2 = salon[0].usernameUtilisateur2 == undefined;
+          console.log('Process salon - le salon '+req.body.title+' ne comporte t\'il pas de joueur 2 ? '+salonSansJoueur2);
+
+          if(salonSansJoueur2){
+            model.findOneAndUpdate({title: req.body.title}, {$set: {usernameUtilisateur2: username}},function(err,salonUpdate){
+              if(err){
+                reject({'Erreur':'Problème interne','CodeHttp':500});
+              }
+              resolve({'Salon': salonUpdate,'CodeHttp':200});
+            })
+          }else{
+            reject({'Erreur':'Salon complet !','CodeHttp':409});
+          }
+
+        })
+      })
+    }
+
+    /*rejoindreSalon: (req,res) => {
+      return new Promise((resolve,reject) => {
+        console.log('Process - debut du promise');
+        model.find({title: req.body.title}).then(salon => {
+          console.log('Process - juste après find.then()');
+          let token = req.headers["authorization"];
+          let username = jwutils.getUserId(token).pseudo;
+          let user2 = salon.getFilter();
+          console.log('Travaillons l objet salon - '+ user2 );
+
+          if(salon.usernameUtilisateur2 == undefined){
+            model.findOneAndUpdate({title: req.body.title},
+              {$set: {usernameUtilisateur2: username}}).then(salonUpdate => {
+                resolve({'Salon': salonUpdate,'CodeHttp':200});
+              })
+          }
+        })
+      })
+    }*/
+
+    /*rejoindreSalon: (req,res) => {
       return new Promise((resolve,reject)=>{
         let token = req.headers["authorization"];
         let username = jwutils.getUserId(token).pseudo;
@@ -100,7 +154,7 @@ module.exports = {
             reject({'Erreur':'Veuillez vous rapprochez de l\'administrateur',
             'CodeHttp':500})
           }
-        })*/
+        })
       })
-    }
+    }*/
 }
