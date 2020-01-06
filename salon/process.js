@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const jwutils = require("../utilisateur/jwt.utils");
 const model = require("./model");
 
+
 module.exports = {
   creerSalon: (req, res) => {
     return new Promise((resolve, reject) => {
@@ -16,27 +17,34 @@ module.exports = {
       }
       else{
         let nomSalon = req.body.title;
-        let p1 = new Array(10);
-        for (var i = 0; i < 10; i++) {
-          p1[i] = new Array(10).fill(0);
-        }
-        let p2 = p1.slice(0);
         model.find({ title: nomSalon }).then(salon => {
           if (salon.length != 0) {
             reject({ Erreur: "Nom de salon déjà pris !" ,
             'CodeHttp':400});
           }
           else{
+              let plateau1Joueur1 = new Array(10);
+              for (var i = 0; i < 10; i++) {
+                  plateau1Joueur1[i] = new Array(10).fill(0);
+              }
+              let plateau2Joueur1 = plateau1Joueur1.slice(0);
+              let plateau1Joueur2 = plateau1Joueur1.slice(0);
+              let plateau2Joueur2 = plateau1Joueur1.slice(0);
               let salon = new model({
-                  title: nomSalon,
-                  usernameUtilisateur1: jwutils.getUserId(req.headers['authorization']).pseudo,
-                  plateau1: p1,
-                  plateau2: p2
+                  'title': nomSalon,
+                  'usernameUtilisateur1': jwutils.getUserId(req.headers['authorization']).pseudo,
+                  'plateau1Joueur1': plateau1Joueur1,
+                  'plateau2Joueur1': plateau2Joueur1,
+                  'plateau1Joueur2': plateau1Joueur2,
+                  'plateau2Joueur2': plateau2Joueur2,
+                  'nombreCoupsJoueur1': 0,
+                  'nombreCoupsJoueur2': 0
                 });
-                resolve(
+
+              resolve(
                   salon
                     .save()
-                    .then(()=>{res.send(salon)})
+                    .then(()=>{res.send(salon);})
                     .catch(()=>{reject({ Erreur: "Problème interne" ,
                     'CodeHttp':500})})
                 );
@@ -59,6 +67,25 @@ module.exports = {
             });
         })
     },
+    salonPlein: (req,res) => {
+      return new Promise((resolve,reject) => {
+        let queryParam = req.query;
+        let titleSalon = queryParam.title;
+        let user2;
+        model.findOne({title: titleSalon},function(err,doc){
+          console.log(doc.usernameUtilisateur2);
+          user2 = doc.usernameUtilisateur2;
+          if(user2 != undefined){
+            resolve({'CodeHttp':205,'Joueur2':user2});
+          }
+          else{
+            reject({'Erreur':'Il n\'y a pas d\'autres joueur encore','CodeHttp':500})
+          }
+        })
+      })
+
+    },
+
     rejoindreSalon: (req,res) => {
       return new Promise((resolve,reject)=>{
 
@@ -74,7 +101,7 @@ module.exports = {
           if(_err){
             reject({'Erreur':'Problème interne','CodeHttp':500});
           }
-          console.log('Début du .find');
+          //console.log('Début du .find');
           console.log('...'+salon[0].usernameUtilisateur2);
           let salonSansJoueur2 = salon[0].usernameUtilisateur2 == undefined;
           console.log('Process salon - le salon '+req.body.title+' ne comporte t\'il pas de joueur 2 ? '+salonSansJoueur2);
@@ -93,68 +120,5 @@ module.exports = {
         })
       })
     }
-
-    /*rejoindreSalon: (req,res) => {
-      return new Promise((resolve,reject) => {
-        console.log('Process - debut du promise');
-        model.find({title: req.body.title}).then(salon => {
-          console.log('Process - juste après find.then()');
-          let token = req.headers["authorization"];
-          let username = jwutils.getUserId(token).pseudo;
-          let user2 = salon.getFilter();
-          console.log('Travaillons l objet salon - '+ user2 );
-
-          if(salon.usernameUtilisateur2 == undefined){
-            model.findOneAndUpdate({title: req.body.title},
-              {$set: {usernameUtilisateur2: username}}).then(salonUpdate => {
-                resolve({'Salon': salonUpdate,'CodeHttp':200});
-              })
-          }
-        })
-      })
-    }*/
-
-    /*rejoindreSalon: (req,res) => {
-      return new Promise((resolve,reject)=>{
-        let token = req.headers["authorization"];
-        let username = jwutils.getUserId(token).pseudo;
-        model.findOneAndUpdate({title: req.body.title,usernameUtilisateur2: null}
-          ,{usernameUtilisateur2: username}).then(salon=>{
-            console.log('On est dans le .then - salons : '+salon);
-            resolve({'Salons':salon,'CodeHTTP':200});
-          }).catch((err)=>{
-            console.log('.catch de rejoindreSalon');
-          })
-        /*model.find({title: req.body.title}).then(salon=>{
-          let token = req.headers["authorization"];
-          let username = jwutils.getUserId(token).pseudo;
-          console.log("Process rejoindreSalon - salon.usernameUtilisateur2 : "+salon.usernameUtilisateur2);
-          if(salon.usernameUtilisateur2 == null){
-            console.log(username);
-            salon.usernameUtilisateur2 = username;
-            model.findOneAndUpdate({title: req.body.title},{$set: {usernameUtilisateur2: username}})
-            .then(salon=>{
-              console.log('On est dans le .then - salons : '+salon);
-              resolve({'Salons':salon,'CodeHTTP':200})
-            })
-            /*.catch((err)=>{
-              console.log('Problème .catch');
-              reject({'Erreur':'Problème interne','CodeHttp':500})
-            })
-          //}
-          else if(username == -1 || username==undefined){
-            reject({'Erreur':'Il y a un problème avec votre session tentez de vous reconnecter',
-            'CodeHttp':401})
-          }
-          else /*if(salon.usernameUtilisateur2.length != null/{
-            reject({'Erreur':'Salon complet !',
-            'CodeHttp':400})
-          }
-          /*else{
-            reject({'Erreur':'Veuillez vous rapprochez de l\'administrateur',
-            'CodeHttp':500})
-          }
-        })
-      })
-    }*/
 }
+

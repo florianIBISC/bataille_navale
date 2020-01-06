@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 
+
 mongoose.connect('mongodb://localhost/batailleNavale',
     {useNewUrlParser:true,useFindAndModify:false,useUnifiedTopology:true})
     .then(()=> console.log('Vous êtes connecté à MongoDB !'))
@@ -20,6 +21,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/',require('./salon/route'));
 app.use('/',require('./utilisateur/route'));
 app.use('/',require('./options/route'));
+app.use('/',require('./jeu/route'));
+
+app.use(function(req,res){
+    res.status(404);
+    res.set('Content-Type','text/html');
+    res.sendFile(path.join(__dirname + '/ressource/notfound.html'));
+})
 
 app.listen(8080,()=>{
     console.log('Hello World !');

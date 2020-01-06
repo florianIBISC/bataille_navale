@@ -5,7 +5,11 @@ var salon = new Schema({
     title: String,
     usernameUtilisateur1: String,
     usernameUtilisateur2: String,
-    plateau1: [[Number]],
-    plateau2: [[Number]]
+    plateau1Joueur1: [[Number]],
+    plateau2Joueur1: [[Number]],
+    plateau1Joueur2: [[Number]],
+    plateau2Joueur2: [[Number]],
+    nombreCoupsJoueur1: Number,
+    nombreCoupsJoueur2: Number
 });
 module.exports = mongoose.model('Salon',salon);

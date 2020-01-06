@@ -4,12 +4,10 @@ app.use(bodyParser.json());
 const action = require('./action');
 const jwutils = require("../utilisateur/jwt.utils");
 
-app.post('/creersalon',action.creerSalon);
-app.put('/rejoindresalon',action.rejoindreSalon);
-app.get('/affichersalons',action.afficherSalons);
-app.get('/salonplein',action.salonPlein);
+//Mise en place des bateaux
+app.put('/jeu/initialiser',action.initialiser);
 
-
+app.put('/jeu/attaquer',action.attaquer);
 
 
 module.exports = app;

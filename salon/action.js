@@ -1,6 +1,4 @@
 const process = require('./process');
-let user1 = undefined;
-let user2 = undefined;
 
 module.exports = {
 
@@ -37,14 +35,23 @@ module.exports = {
     rejoindreSalon(req,res,body){
         process.rejoindreSalon(req,res,body)
         .then((result)=>{
-            console.log('Salon action - code HTTP '+result.CodeHttp);
-            console.log('Salon action - objet salon '+result.Salon);
+            //console.log('Salon action - code HTTP '+result.CodeHttp);
+            //console.log('Salon action - objet salon '+result.Salon);
             res.status(result.CodeHttp).json(result.Salon);
         })
         .catch((err)=>{
-            console.log('Salon action erreur - code HTTP '+err.CodeHttp);
+            //console.log('Salon action erreur - code HTTP '+err.CodeHttp);
+            res.status(err.CodeHttp).json(err.Erreur);
+        })
+    },
+
+    salonPlein(req,res,body){
+        process.salonPlein(req,res,body)
+        .then((result) => {
+            res.status(result.CodeHttp).json(result.Joueur2);
+        })
+        .catch((err) => {
             res.status(err.CodeHttp).json(err.Erreur);
         })
     }
-
 }
