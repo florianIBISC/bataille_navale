@@ -23,12 +23,19 @@ app.use('/',require('./utilisateur/route'));
 app.use('/',require('./options/route'));
 app.use('/',require('./jeu/route'));
 
+
+app.get('/imateapot',(req,res) => {
+    res.set({'Content-Type': 'image/gif'});
+    res.status(418);
+    res.sendFile(path.join(__dirname + '/ressource/theiere.gif'));
+});
+
 app.use(function(req,res){
     res.status(404);
+    res.set('Location','../../affichersalons');
     res.set('Content-Type','text/html');
     res.sendFile(path.join(__dirname + '/ressource/notfound.html'));
-})
-
+});
 app.listen(8080,()=>{
     console.log('Hello World !');
 })
