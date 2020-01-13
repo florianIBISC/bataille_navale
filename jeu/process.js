@@ -144,6 +144,7 @@ module.exports = {
                             console.log('Process attaquer - plateau2Joueur2[abscisse][ordonnee] : '+plateau2Joueur2[abscisse][ordonnee]);
                             let nouveauScore;
                             let nombreCoupsJoueur2 = doc.nombreCoupsJoueur2 + 1;
+                            console.log('Process attaquer - nombre de coups joueur2 : '+nombreCoupsJoueur2);
                             modelUser.findOne({nom: username},(err,doc) => {
                                 nouveauScore = doc.score + 10;
                                 modelUser.updateOne({nom: username},{$set: {'score':nouveauScore}});
