@@ -5,7 +5,7 @@ const modelSalon = require("../salon/model");
 const modelUser = require("../utilisateur/model");
 const convertisseur = require("../ressource/convertisseurLettreEnChiffre");
 const ObjectId = mongoose.Types.ObjectId;
-const nbrTotalDeCase = 10;
+const nbrTotalDeCase = 5;
 
 module.exports = {
     initialiser: (req,res) => {
@@ -58,6 +58,10 @@ module.exports = {
             console.log('Process attaquer - début de la méthode');
             let token = req.headers["authorization"];
             let username = jwutils.getUserId(token).pseudo;
+            let nouveauScore;
+            let nombreCoupsJoueur1;
+            let nombreCoupsJoueur2;
+            let dernierCoup;
             if(username == -1 || username == undefined || username == null){
                 reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
             }
@@ -94,15 +98,15 @@ module.exports = {
                     console.log('Process attaquer - début de modelSalon.findOne');
                     //joueur 1 attaque
                     if(username == doc.usernameUtilisateur1){
+                        dernierCoup = doc.dernierCoupsJouesJoueur1;
+                        dernierCoup.push(coordonneeLettreChiffre);
                         console.log('Process attaquer - le joueur 1 attaque - doc.usernameUtilisateur1 = '+doc.usernameUtilisateur1);
                         //il touche le joueur 2
                         if(doc.plateau1Joueur2[abscisse][ordonnee] > 0){
                             let plateau2Joueur1 = doc.plateau2Joueur1;
                             plateau2Joueur1[abscisse][ordonnee] = -2;
-                            let nouveauScore;
-                            let nombreCoupsJoueur1 = doc.nombreCoupsJoueur1 + 1;
-                            let dernierCoup = doc.dernierCoupsJouesJoueur1;
-                            dernierCoup.push(coordonneeLettreChiffre);
+                            nombreCoupsJoueur1 = doc.nombreCoupsJoueur1 + 1;
+
 
                             modelUser.findOne({nom: username},(err,doc) => {
                                 nouveauScore = doc.score + 10;
@@ -127,7 +131,7 @@ module.exports = {
                         else if(doc.plateau1Joueur2[abscisse][ordonnee] == 0){
                             let plateau2Joueur1 = doc.plateau2Joueur1;
                             plateau2Joueur1[abscisse][ordonnee] = -1;
-                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur1':plateau2Joueur1,'nombreCoupsJoueur1':nombreCoupsJoueur1}},
+                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur1':plateau2Joueur1,'nombreCoupsJoueur1':nombreCoupsJoueur1, 'dernierCoupsJouesJoueur1':dernierCoup}},
                             (err,doc) => {
                                 if(err){
                                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
@@ -142,14 +146,15 @@ module.exports = {
                     //Le joueur 2 attaque
                     else if(username == doc.usernameUtilisateur2){
                         console.log('Process attaquer - le joueur 2 attaque');
+                        dernierCoup = doc.dernierCoupsJouesJoueur2;
+                        dernierCoup.push(coordonneeLettreChiffre);
                         //Il touche le joueur 1
                         if(doc.plateau1Joueur1[abscisse][ordonnee] > 0){
-                            //console.log('Process attaquer - doc.plateau1Joueur1[abscisse][ordonnee] : '+doc.plateau1Joueur1[abscisse][ordonnee]);
+
                             let plateau2Joueur2 = doc.plateau2Joueur2;
                             plateau2Joueur2[abscisse][ordonnee] = doc.plateau1Joueur1[abscisse][ordonnee] * -1;
-                            //console.log('Process attaquer - plateau2Joueur2[abscisse][ordonnee] : '+plateau2Joueur2[abscisse][ordonnee]);
-                            let nouveauScore;
-                            let nombreCoupsJoueur2 = doc.nombreCoupsJoueur2 + 1;
+
+                            nombreCoupsJoueur2 = doc.nombreCoupsJoueur2 + 1;
                             console.log('Process attaquer - plateau2Joueur2 : '+plateau2Joueur2);
 
                             modelUser.findOne({prenom: username},
@@ -162,7 +167,7 @@ module.exports = {
 
                                 });                            
 
-                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur2':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2}},
+                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur2':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2, 'dernierCoupsJouesJoueur2':dernierCoup}},
                             (err,doc) => {
                                 if(err){
                                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
@@ -170,25 +175,21 @@ module.exports = {
                                 console.log('Process attaquer - modelSalon.updateOne fin : ');
 
                             });
-                            /*let nbrCasesAdversesNonTouches = nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,false);
-                            setTimeout(() => {},1000);
-                            console.log('Process attaquer - nbrCasesAdversesNonTouches : '+nbrCasesAdversesNonTouches);
-
-                            if(nbrTotalDeCase - nbrCasesAdversesNonTouches == 0 ){
-                                resolve({'CodeHttp':200,'Resultat': 'Vous avez gagné la partie. Félicitation','PlateauJoueurAdverse':plateau2Joueur2})
-                            }
-                            else{
-                                resolve({'CodeHttp':200,'Resultat': 'Touché','PlateauJoueurAdverse':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2})
-                            }*/
                             nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,false).then(nbr => {
                                 console.log('Process attaquer - nbrCasesAdversesNonTouches : '+nbr.count);
+                                if(nbr.count == 0 ){
+                                    resolve({'CodeHttp':200,'Resultat': 'Vous avez gagné la partie. Félicitation','PlateauJoueurAdverse':plateau2Joueur2})
+                                }
+                                else{
+                                    resolve({'CodeHttp':200,'Resultat': 'Touché','PlateauJoueurAdverse':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2})
+                                }
                             })
                         }
                         //tir dans l'eau
                         else if(doc.plateau1Joueur1[abscisse][ordonnee] == 0){
                             let plateau2Joueur2 = doc.plateau2Joueur2;
                             plateau2Joueur2[abscisse][ordonnee] = -1;
-                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur2':plateau2Joueur2}},
+                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur2':plateau2Joueur2, 'dernierCoupsJouesJoueur2':dernierCoup}},
                             (err,doc) => {
                                 if(err){
                                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
