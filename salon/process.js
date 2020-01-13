@@ -38,7 +38,9 @@ module.exports = {
                   'plateau1Joueur2': plateau1Joueur2,
                   'plateau2Joueur2': plateau2Joueur2,
                   'nombreCoupsJoueur1': 0,
-                  'nombreCoupsJoueur2': 0
+                  'nombreCoupsJoueur2': 0,
+                  'dernierCoupsJouesJoueur1': [],
+                  'dernierCoupsJouesJoueur2': []
                 });
 
               resolve(
@@ -72,6 +74,11 @@ module.exports = {
         let queryParam = req.query;
         let titleSalon = queryParam.title;
         let user2;
+
+        if(titleSalon == undefined || titleSalon == null){
+          reject({'Erreur':'Problème dans l\'url','CodeHttp':500})
+        }
+        console.log('SalonPlein méthode - avant recherche mongoose');
         model.findOne({title: titleSalon},function(err,doc){
           console.log(doc.usernameUtilisateur2);
           user2 = doc.usernameUtilisateur2;

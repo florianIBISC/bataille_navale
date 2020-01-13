@@ -12,12 +12,21 @@ module.exports = {
 
     },
     attaquer(req,res,body){
-        process.ataquer(req,res)
+        process.attaquer(req,res)
         .then((result)=>{
-            res.status(result.CodeHttp).json(result.json)
+            res.status(result.CodeHttp).json(result.Resultat)
         })
         .catch((err)=>{
-            res.status(err.CodeHttp).json(err.json)
+            res.status(err.CodeHttp).json(err.Erreur)
+        })
+    },
+    attenteDeJouer(req,res,body){
+        process.attenteTour(req,res)
+        .then((result) => {
+            res.status(result.CodeHttp).json(result);
+        })
+        .catch((err) => {
+            res.status(err.CodeHttp).json(err.Erreur);
         })
     }
 }

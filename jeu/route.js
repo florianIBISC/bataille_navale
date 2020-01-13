@@ -9,5 +9,8 @@ app.put('/jeu/initialiser',action.initialiser);
 
 app.put('/jeu/attaquer',action.attaquer);
 
+app.get('/jeu/attendre',action.attenteDeJouer);
+
+
 
 module.exports = app;
