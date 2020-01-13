@@ -63,12 +63,14 @@ module.exports = {
             }
 
 
+            else{
             console.log('Process attaquer - req.body.coordonnee : '+ req.body.coordonnee);
             let coordonnee = req.body.coordonnee;
-            let coordonneeMapp;
+            let coordonneeLettreChiffre = coordonnee;
             console.log('Process attaquer - après affectation à la var coordonnee');
-            coordonneeMapp = mappingCoordonnee(coordonnee);
+            coordonnee = mappingCoordonnee(coordonnee);
             console.log('Process attaquer - après la fct de mappingCoordonnées');
+            console.log('Process attaquer - coordonneeLettreChiffre : '+coordonneeLettreChiffre);
             console.log('Process attaquer - Mapping coordonnee.abscisse : '+ coordonnee.abscisse + '\tcoordonnee.ordonnee : '+coordonnee.ordonnee);
 
 
@@ -99,17 +101,21 @@ module.exports = {
                             plateau2Joueur1[abscisse][ordonnee] = -2;
                             let nouveauScore;
                             let nombreCoupsJoueur1 = doc.nombreCoupsJoueur1 + 1;
+                            let dernierCoup = doc.dernierCoupsJouesJoueur1;
+                            dernierCoup.push(coordonneeLettreChiffre);
+
                             modelUser.findOne({nom: username},(err,doc) => {
                                 nouveauScore = doc.score + 10;
                                 modelUser.updateOne({nom: username},{$set: {'score':nouveauScore}});
                             });
-                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur1':plateau2Joueur1,'nombreCoupsJoueur1':nombreCoupsJoueur1}},
+                            modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur1':plateau2Joueur1,'nombreCoupsJoueur1':nombreCoupsJoueur1, 'dernierCoupsJouesJoueur1':dernierCoup}},
                             (err,doc) => {
                                 if(err){
                                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
                                 }
                             });
                             let nbrCasesAdversesNonTouches = nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,new Boolean("true"));
+                            console.log('Process attaquer - nbrCasesAdversesNonTouches = '+nbrCasesAdversesNonTouches);
 
                             if(nbrTotalDeCase - nbrCasesAdversesNonTouches <1 ){
                                 resolve({'CodeHttp':200,'Resultat': 'Vous avez gagné la partie. Félicitation','PlateauJoueurAdverse':plateau2Joueur1})
@@ -138,29 +144,45 @@ module.exports = {
                         console.log('Process attaquer - le joueur 2 attaque');
                         //Il touche le joueur 1
                         if(doc.plateau1Joueur1[abscisse][ordonnee] > 0){
-                            console.log('Process attaquer - doc.plateau1Joueur1[abscisse][ordonnee] : '+doc.plateau1Joueur1[abscisse][ordonnee]);
+                            //console.log('Process attaquer - doc.plateau1Joueur1[abscisse][ordonnee] : '+doc.plateau1Joueur1[abscisse][ordonnee]);
                             let plateau2Joueur2 = doc.plateau2Joueur2;
-                            plateau2Joueur2[abscisse][ordonnee] = -2;
-                            console.log('Process attaquer - plateau2Joueur2[abscisse][ordonnee] : '+plateau2Joueur2[abscisse][ordonnee]);
+                            plateau2Joueur2[abscisse][ordonnee] = doc.plateau1Joueur1[abscisse][ordonnee] * -1;
+                            //console.log('Process attaquer - plateau2Joueur2[abscisse][ordonnee] : '+plateau2Joueur2[abscisse][ordonnee]);
                             let nouveauScore;
                             let nombreCoupsJoueur2 = doc.nombreCoupsJoueur2 + 1;
-                            console.log('Process attaquer - nombre de coups joueur2 : '+nombreCoupsJoueur2);
-                            modelUser.findOne({nom: username},(err,doc) => {
-                                nouveauScore = doc.score + 10;
-                                modelUser.updateOne({nom: username},{$set: {'score':nouveauScore}});
-                            });
+                            console.log('Process attaquer - plateau2Joueur2 : '+plateau2Joueur2);
+
+                            modelUser.findOne({prenom: username},
+                                function(err,doc){
+                                    console.log('Process attaquer - trouver un user prenom : '+doc.prenom);
+                                    nouveauScore = doc.score + 10;
+                                    //console.log('Process attaquer - score : '+doc.score+' - nouveauScore : '+nouveauScore);
+
+                                    modelUser.updateOne({prenom: username},{$set: {score:nouveauScore}});
+
+                                });                            
+
                             modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur2':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2}},
                             (err,doc) => {
                                 if(err){
                                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
                                 }
-                            });
-                            let nbrCasesAdversesNonTouches = nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,new Boolean("false"));
+                                console.log('Process attaquer - modelSalon.updateOne fin : ');
 
-                            if(nbrTotalDeCase - nbrCasesAdversesNonTouches <1 ){
+                            });
+                            /*let nbrCasesAdversesNonTouches = nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,false);
+                            setTimeout(() => {},1000);
+                            console.log('Process attaquer - nbrCasesAdversesNonTouches : '+nbrCasesAdversesNonTouches);
+
+                            if(nbrTotalDeCase - nbrCasesAdversesNonTouches == 0 ){
                                 resolve({'CodeHttp':200,'Resultat': 'Vous avez gagné la partie. Félicitation','PlateauJoueurAdverse':plateau2Joueur2})
                             }
-                            resolve({'CodeHttp':200,'Resultat': 'Touché','PlateauJoueurAdverse':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2})
+                            else{
+                                resolve({'CodeHttp':200,'Resultat': 'Touché','PlateauJoueurAdverse':plateau2Joueur2,'nombreCoupsJoueur2':nombreCoupsJoueur2})
+                            }*/
+                            nbrDeCasesDeBateauEnVieDeLAutreJoueur(req.body.title,username,false).then(nbr => {
+                                console.log('Process attaquer - nbrCasesAdversesNonTouches : '+nbr.count);
+                            })
                         }
                         //tir dans l'eau
                         else if(doc.plateau1Joueur1[abscisse][ordonnee] == 0){
@@ -180,8 +202,9 @@ module.exports = {
                     }
                 
                 });
-        })
-    },
+        }
+    })
+},
     attenteTour: (req,res) => {
         return new Promise((resolve,reject) => {
             console.log('attenteTour - début de la méthode');
@@ -198,12 +221,12 @@ module.exports = {
                     console.log('attenteTour - modelSalon.findOne début');
                     if(username == doc.usernameUtilisateur1){
                         if(doc.nombreCoupsJoueur1 == doc.nombreCoupsJoueur2){
-                            console.log('attenteTour - avant le resolve joueur1 peut jouer');
+                            //console.log('attenteTour - avant le resolve joueur1 peut jouer');
                             resolve({'CodeHttp':200,'Resultat':'Vous pouvez jouer','Plateau1':
                             doc.plateau1Joueur1, 'Plateau2': doc.plateau2Joueur1, 'DernierCoup': doc.dernierCoupsJouesJoueur2[doc.dernierCoupsJouesJoueur2.length - 1]});
                         }
                         else{
-                            console.log('attenteTour - avant le resolve joueur1 ne peut pas jouer');
+                            //console.log('attenteTour - avant le resolve joueur1 ne peut pas jouer');
                             reject({'CodeHttp':409,'Erreur':'Votre adversaire n\'a pas terminé son tour'});
                         }
                     }
@@ -219,41 +242,42 @@ module.exports = {
                 });
         })
         
-    },
+    }
+}
+    let nbrDeCasesDeBateauEnVieDeLAutreJoueur =  (titre, username, username1) => {
+        return new Promise((resolve,reject) =>{
+            let count = 0;
+            console.log('nbrDeCasesDeBateauEnVieDeLAutreJoueur - début de la méthode - username1? '+username1);
 
-    nbrDeCasesDeBateauEnVieDeLAutreJoueur: (title, username, username1) => {
-        if(!(username1 instanceof Boolean)){
-            return -1;
-        }
-        let count = 0;
-        modelSalon.findOne({title: req.body.title,
-            $or:[{usernameUtilisateur1: username},{usernameUtilisateur2: username}]},
-            function(err,doc){
-                if(username1){
-                    for(var i=0; i<10;i++){
-                        for(var j=0;j<10;j++){
-                            if(username2.plateau1Joueur2[i][j] > 0){
-                                count ++;
+            modelSalon.findOne({title: titre,
+                $or:[{usernameUtilisateur1: username},{usernameUtilisateur2: username}]},
+                function(err,doc){
+                    console.log('nbrDeCasesDeBateauEnVieDeLAutreJoueur - debut du findone');
+                    if(username1){
+                        for(var i=0; i<10;i++){
+                            for(var j=0;j<10;j++){
+                                if(doc.plateau1Joueur2[i][j] + doc.plateau2Joueur1[i][j] != 0){
+                                    //console.log('i : '+i+ ' j : '+j+ '  doc.plateau1Joueur1[i][j] : '+doc.plateau1Joueur1[i][j]+' doc.plateau2Joueur2[i][j] : '+doc.plateau2Joueur2[i][j]); 
+                                    count ++;
+                                }
                             }
                         }
                     }
-                }
-                else{
-                    for(var i=0; i<10;i++){
-                        for(var j=0;j<10;j++){
-                            if(username1.plateau1Joueur1[i][j] > 0){
-                                count ++;
+                    else{
+                        for(var i=0; i<10;i++){
+                            for(var j=0;j<10;j++){
+                                if(doc.plateau1Joueur1[i][j] + doc.plateau2Joueur2[i][j] != 0){
+                                    //console.log('i : '+i+ ' j : '+j+ '  doc.plateau1Joueur1[i][j] : '+doc.plateau1Joueur1[i][j]+' doc.plateau2Joueur2[i][j] : '+doc.plateau2Joueur2[i][j]);
+                                    count ++;
+                                }
                             }
                         }
                     }
-                }
-                return count;
+                    console.log('nbrDeCasesDeBateauEnVieDeLAutreJoueur - fin du findone - count = '+count);
+                    resolve({'count':count})
+                })
             })
     }
-
-    
-}
-
 
     let mappingCoordonnee = (coordonnee) => {
         console.log('Process mappingCoordonnee - début de la fct - coordonnee.size = '+coordonnee.length);
