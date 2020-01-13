@@ -79,7 +79,7 @@ class Connection extends React.Component {
                             </div>
                             <Link to="/initalisation">
                             <button type="submit" class="btn btn-primary btn-block" style={{display: "inline-block", width: "50%"}}>
-                                Connection
+                                Connexion
                             </button>
                             </Link>
                             <Link to="/compte">
