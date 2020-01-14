@@ -11,22 +11,34 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+import API from './../API/API'
+
 import './CSS/bootstrap.css'
 import './CSS/style.css'
 
-class Connection extends React.Component {
+class Connexion extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             amount: '',
-            password: '',
+            pseudo: 'jay91',
+            password: 'Jay91',
             weight: '',
             weightRange: '',
             showPassword: false,
         };
     }
-    
     //creer une fonction pour lier le back et front au bouttons
+    send = async () =>{
+        const { pseudo, password} = this.state;
+        try{
+            const {data} = await API.login(pseudo, password);
+            localStorage.setItem("token", data.token);
+            console.log('Connceter')
+        }catch (error){
+            console.log('error')
+        }
+    };
     render(){
         const handleChange = prop => event => {
             this.setState({ ...this.state, [prop]: event.target.value });
@@ -52,6 +64,9 @@ class Connection extends React.Component {
                                 <TextField
                                     label="Login "
                                     id="simple-start-adornment"
+                                    type='text'
+                                    value={this.state.pseudo}
+                                    onChange={handleChange('pseudo')}
                                     className={clsx(useStyles.margin, useStyles.textField)}
                                 />
                             </div>
@@ -77,11 +92,13 @@ class Connection extends React.Component {
                                     />
                                 </FormControl>
                             </div>
-                            <Link to="/initalisation">
-                            <button type="submit" class="btn btn-primary btn-block" style={{display: "inline-block", width: "50%"}}>
-                                Connexion
-                            </button>
-                            </Link>
+                            {/*<Link to="/menu">*/}
+                            <input type="button" class="btn btn-primary btn-block" style={{display: "inline-block", width: "50%"}} 
+                                onClick={this.send()}
+                                value='Connexion'
+                            >    
+                            </input>
+                            {/*</Link>*/}
                             <Link to="/compte">
                             <button type="submit" class="btn btn-primary btn-block" style={{display:"inline-block", width: "50%"}}>
                                 Creer un compte
@@ -94,7 +111,7 @@ class Connection extends React.Component {
         );
     }
 }
-export default Connection;
+export default Connexion;
 
 const useStyles = makeStyles(theme => ({
     root: {
