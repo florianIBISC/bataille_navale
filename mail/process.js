@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const jwutils = require("../utilisateur/jwt.utils");
 const modelUser = require("../utilisateur/model");
 const nodemailer = require("nodemailer");
+const bcrypt = require('bcrypt');
 
 module.exports = {
   motdepasseoublie: (req, res) => {
@@ -14,10 +15,15 @@ module.exports = {
         if(nvPassword != confirmationPassword){
           reject({'CodeHttp':400,'Erreur':'Le mot de passe n\'a pas été confirmé'})
         }
+        bcrypt.hash(nvPassword, 5, function (err, bcryptedPassword) {
+          console.log('process mail - passwordhash : '+bcryptedPassword);
+          modelUser.updateOne({'email':email}, {$set: {'password':bcryptedPassword}});
+        });
 
-        modelUser.updateOne({'email':email}, {$set: {'password':nvPassword}});
-        mail(email,nvPassword).then((res) => {
-          resolve({'CodeHttp':200,'param':res})
+        mail(email,confirmationPassword).then((res) => {
+          resolve({'CodeHttp':200,'message':res.Message})
+        }).catch((err)=>{
+          resolve({'CodeHttp':500,'message':'Requête non traité suite à un problème interne'})
         })
 
       })
@@ -49,7 +55,7 @@ let mail = (email, password) => {
     });
   
     transporter.close();
-    resolve({'Message':'Ok'});
+    resolve({'Message':'Votre mot de passe a été changé avec succès'});
   
   })
 

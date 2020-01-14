@@ -4,7 +4,7 @@ module.exports = {
     motdepasseoublie: (req,res,body) => {
         process.motdepasseoublie(req,res)
         .then((result) => {
-            res.status(result.CodeHttp).json(result.param);
+            res.status(result.CodeHttp).json(result.message);
         })
         .catch((err) => {
             res.status(err.CodeHttp).json(err);
