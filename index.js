@@ -10,8 +10,6 @@ mongoose.connect('mongodb://localhost/batailleNavale',
     {useNewUrlParser:true,useFindAndModify:false,useUnifiedTopology:true})
     .then(()=> console.log('Vous êtes connecté à MongoDB !'))
     .catch(err => console.error('Quelque chose c\'est mal !',err));
-
-
     
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +20,7 @@ app.use('/',require('./salon/route'));
 app.use('/',require('./utilisateur/route'));
 app.use('/',require('./options/route'));
 app.use('/',require('./jeu/route'));
+app.use('/',require('./mail/route'));
 
 
 app.get('/imateapot',(req,res) => {

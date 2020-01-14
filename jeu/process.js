@@ -108,9 +108,9 @@ module.exports = {
                             nombreCoupsJoueur1 = doc.nombreCoupsJoueur1 + 1;
 
 
-                            modelUser.findOne({nom: username},(err,doc) => {
+                            modelUser.findOne({pseudo: username},(err,doc) => {
                                 nouveauScore = doc.score + 10;
-                                modelUser.updateOne({nom: username},{$set: {'score':nouveauScore}});
+                                modelUser.updateOne({pseudo: username},{$set: {'score':nouveauScore}});
                             });
                             modelSalon.updateOne({title: req.body.title},{$set: {'plateau2Joueur1':plateau2Joueur1,'nombreCoupsJoueur1':nombreCoupsJoueur1, 'dernierCoupsJouesJoueur1':dernierCoup}},
                             (err,doc) => {
@@ -157,13 +157,13 @@ module.exports = {
                             nombreCoupsJoueur2 = doc.nombreCoupsJoueur2 + 1;
                             console.log('Process attaquer - plateau2Joueur2 : '+plateau2Joueur2);
 
-                            modelUser.findOne({prenom: username},
+                            modelUser.findOne({pseudo: username},
                                 function(err,doc){
-                                    console.log('Process attaquer - trouver un user prenom : '+doc.prenom);
+                                    console.log('Process attaquer - trouver un user pseudo : '+doc.pseudo);
                                     nouveauScore = doc.score + 10;
                                     //console.log('Process attaquer - score : '+doc.score+' - nouveauScore : '+nouveauScore);
 
-                                    modelUser.updateOne({prenom: username},{$set: {score:nouveauScore}});
+                                    modelUser.updateOne({pseudo: username},{$set: {score:nouveauScore}});
 
                                 });                            
 
