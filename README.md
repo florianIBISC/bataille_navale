@@ -6,7 +6,9 @@ Bataille navale avec Node et React Js
 
 - [Sommaire](#Introduction)
     - [Choix des technologies](#Choixdestechnologies)
-    - [Installation en locale](#Installationenlocale)
+    - [Utilisation du Front](#UtilisationduFront)
+    - [Utilisation du Back](#UtilisationduBack)
+    - [Adresses locales](#Adresseslocales)
     - [Déploiement](#Déploiement)
     - [Routes de l'api](#Routesdel'api)
     - [Utilisation de l'api](#Utilisationdel'api)
@@ -17,16 +19,21 @@ Côté back notre choix s'est naturellement porté sur Node JS en excluant l'uti
 afin de garantir l'utilisation des standards REST.
 Côté front nos délibérations se sont portés sur REACT JS. 
 
-# Installation en local
+# Utilisation du Front
+npm install react-router-dom / @material-ui/core / @material-ui/icons / clsx / axios / bcrypt
+
+npm start pour démarrer le projet
+
+Accès à l'écran de connexion par lancement du projet
+Accès à l'écran du menu par le lien '/menu'
+Accès à l'écran de création de compte par le lien '/compte'
+Accès à l'écran de jeu par le lien '/jeu'
+
+# Utilisation du back
 Positionnez-vous à la racine du projet et lancez la comande npm i
-
-Il est possible que certains modules posent problèmes. Les plus récurrents sont : 
-react-router-dom / @material-ui/core / @material-ui/icons / clsx / axios / bcrypt.
-N'hésitez pas à les installer un à un.
-
 Rendez-vous à la racine du projet back et lancez : node index.js
-Rendez-vous à la racine du projet front et lancez : npm start
 
+# Adresses locales
 Les adresses locales sont : 
 + http://localhost:3000 pour le front
 + http://localhost:8080 pour le back 
@@ -67,15 +74,4 @@ pour tester le back.
 | /imateapot | GET | Implémentation du célèbre code Http 418 |  |
 
 
-# Utilisation de l'api
-Cette section sert à aider celui qui osera tester l'api par le biai de requête destinées au back 
 
-# Utilisation du Front
-npm install react-router-dom / @material-ui/core / @material-ui/icons / clsx / axios / bcrypt
-
-npm start pour démarrer le projet
-
-Accès à l'écran de connexion par lancement du projet
-Accès à l'écran du menu par le lien '/menu'
-Accès à l'écran de création de compte par le lien '/compte'
-Accès à l'écran de jeu par le lien '/jeu'
