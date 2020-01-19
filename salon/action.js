@@ -6,7 +6,9 @@ module.exports = {
     afficherSalons(req,res,body){
         process.afficherSalon(req,res)
         .then((result)=>{
-            res.status(result.CodeHttp).json(result.Salons)
+            let codeHttp = result.CodeHttp;
+            delete result.CodeHttp;
+            res.status(codeHttp).json(result);
         })
         .catch((err)=>{
             res.status(err.CodeHttp).json(err.Erreur)
@@ -16,7 +18,9 @@ module.exports = {
     creerSalon(req,res,body){
         process.creerSalon(req,res,body)
         .then((result)=>{
-            res.status(201).json(result);
+            let codeHttp = result.CodeHttp;
+            delete result.CodeHttp;
+            res.status(codeHttp).json(result);
         })
          .catch((err)=>{
              res.status(err.CodeHttp).send(err.Erreur)
@@ -35,12 +39,9 @@ module.exports = {
     rejoindreSalon(req,res,body){
         process.rejoindreSalon(req,res,body)
         .then((result)=>{
-            //console.log('Salon action - code HTTP '+result.CodeHttp);
-            //console.log('Salon action - objet salon '+result.Salon);
             res.status(result.CodeHttp).json(result.Salon);
         })
         .catch((err)=>{
-            //console.log('Salon action erreur - code HTTP '+err.CodeHttp);
             res.status(err.CodeHttp).json(err.Erreur);
         })
     },
@@ -48,7 +49,7 @@ module.exports = {
     salonPlein(req,res,body){
         process.salonPlein(req,res,body)
         .then((result) => {
-            res.status(result.CodeHttp).json(result.Joueur2);
+            res.status(result.CodeHttp).json(result.Message);
         })
         .catch((err) => {
             res.status(err.CodeHttp).json(err.Erreur);

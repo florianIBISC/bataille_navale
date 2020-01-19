@@ -30,6 +30,19 @@ module.exports = {
             res.status(err.CodeHTTP).json(err.Erreur)
         })
 
+    },
+    deleteUser(req,res){
+        if(req.method != "DELETE"){
+            res.status(405).json({'Erreur':'Cette ressource n\'est disponible qu\'avec la méthode DELETE'});
+        }
+            process.deleteUser(req,res)
+            .then((result) => {
+                res.status(result.CodeHttp).json()
+            })
+            .catch((err) => {
+                res.status(err.CodeHttp).json(err.Erreur)
+            })
+
     }
 
 }

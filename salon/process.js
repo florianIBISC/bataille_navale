@@ -43,50 +43,73 @@ module.exports = {
                   'dernierCoupsJouesJoueur2': []
                 });
 
-              resolve(
+              /*resolve(
                   salon
                     .save()
                     .then(()=>{res.send(salon);})
                     .catch(()=>{reject({ Erreur: "Problème interne" ,
                     'CodeHttp':500})})
-                );
+                );*/
+                salon.save().then(() => {
+                  resolve({'Resultat':'Salon crée !','CodeHttp':201,'Salon':salon})
+                })
+                
               }
         })}      
     });
 },
     afficherSalon: (req,res)=>{
         return new Promise((resolve,reject)=>{
+          let token = req.headers["authorization"];
+          let username = jwutils.getUserId(token).pseudo;
+  
+          if(username == -1 || username == undefined || username == null){
+            reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+          }
             model.find({usernameUtilisateur2:undefined}).then((salons)=>{
                 if(salons.length > 0){
-                    resolve({'Salons':salons,'CodeHttp':200});
+                  let objRetourne = {};
+                  for(let i=0;i<salons.length;i++){
+                    let newObject = {};
+                    newObject['Salon '+(i+1)] = salons[i].title;
+                    newObject['Joueur du salon '+(i+1)] = salons[i].usernameUtilisateur1;
+                    objRetourne = Object.assign(objRetourne,newObject);
+                  }
+                  objRetourne = Object.assign(objRetourne,{'CodeHttp':200});
+                  resolve(objRetourne);
                 }
                 else{
                   resolve({'Salons':'Il n\'y a aucun salon','CodeHttp':204})
                 }
             }).catch((err)=>{
-                reject({'Erreur': 'Problème inetrne',
+                reject({'Erreur': 'Problème interne',
                 'CodeHttp':500})
             });
         })
     },
     salonPlein: (req,res) => {
       return new Promise((resolve,reject) => {
+        let token = req.headers["authorization"];
+        let username = jwutils.getUserId(token).pseudo;
+
+        if(username == -1 || username == undefined || username == null){
+          reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+        }
         let queryParam = req.query;
         let titleSalon = queryParam.title;
         let user2;
 
         if(titleSalon == undefined || titleSalon == null){
-          reject({'Erreur':'Problème dans l\'url','CodeHttp':500})
+          reject({'Erreur':'Problème dans l\'url','CodeHttp':400})
         }
-        console.log('SalonPlein méthode - avant recherche mongoose');
         model.findOne({title: titleSalon},function(err,doc){
           console.log(doc.usernameUtilisateur2);
           user2 = doc.usernameUtilisateur2;
           if(user2 != undefined){
-            resolve({'CodeHttp':205,'Joueur2':user2});
+            resolve({'CodeHttp':205,'Message':'Vous avez été rejoins par '+user2});
           }
           else{
-            reject({'Erreur':'Il n\'y a pas d\'autres joueur encore','CodeHttp':500})
+            resolve({'Message':'Il n\'y a pas d\'autres joueur encore :( ','CodeHttp':200})
           }
         })
       })
@@ -96,22 +119,23 @@ module.exports = {
     rejoindreSalon: (req,res) => {
       return new Promise((resolve,reject)=>{
 
-        console.log('Début de la promesse');
         let token = req.headers["authorization"];
         let username = jwutils.getUserId(token).pseudo;
 
         if(username == -1 || username == undefined || username == null){
           reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+          return;
         }
 
         model.find({title: req.body.title},function(_err,salon){
           if(_err){
             reject({'Erreur':'Problème interne','CodeHttp':500});
           }
-          //console.log('Début du .find');
-          console.log('...'+salon[0].usernameUtilisateur2);
+          if(salon.length == 0){
+            reject({'Erreur':'Le salon spécifié n\'existe pas','CodeHttp':400});
+            return;
+          }
           let salonSansJoueur2 = salon[0].usernameUtilisateur2 == undefined;
-          console.log('Process salon - le salon '+req.body.title+' ne comporte t\'il pas de joueur 2 ? '+salonSansJoueur2);
 
           if(salonSansJoueur2){
             model.findOneAndUpdate({title: req.body.title}, {$set: {usernameUtilisateur2: username}},function(err,salonUpdate){

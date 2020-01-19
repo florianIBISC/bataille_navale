@@ -12,10 +12,10 @@ module.exports = {
         return new Promise((resolve,reject) => {
             let token = req.headers["authorization"];
             let username = jwutils.getUserId(token).pseudo;
-            console.log('Process jeu - username :'+username);
 
             if(username == -1 || username == undefined || username == null){
                 reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+                return;
             }
             modelSalon.findOne({title: req.body.title,
             $or:[{usernameUtilisateur1: username},{usernameUtilisateur2: username}]},
@@ -23,26 +23,64 @@ module.exports = {
                 if(err){
                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
                 }
+                if(doc == null){
+                    reject({'Erreur':'Vous ne participez pas à cette partie !','CodeHttp':400})
+                    return;
+                }
                 let configurationBateau = null;
-                configurationBateau = req.body.bateau;
-                if(configurationBateau == null){
+                if(req.body.bateau == null){
                     reject({'Erreur':'Vous n\'avez pas rempli votre grille !','CodeHttp':400})
                 }
-                else if(username == doc.usernameUtilisateur1){
-                    console.log('Vous êtes le user1 - '+doc.usernameUtilisateur1);
-                    modelSalon.updateOne({title: req.body.title},{$set: {'plateau1Joueur1':configurationBateau}})
+                configurationBateau = req.body.bateau;
+                let nombreCoupsJoueur1 = doc.nombreCoupsJoueur1;
+                let nombreCoupsJoueur2 = doc.nombreCoupsJoueur2;
+
+                let configurationBateauTabFinal = [];
+                let j= 0;
+                let tailleTab = 0;
+                let tabTemp = new Array();
+                while(j<configurationBateau.length){
+                    if(configurationBateau.charAt(j)=='1' || configurationBateau.charAt(j)=='0'){
+                        if(tailleTab == 11){
+                            configurationBateauTabFinal.push(tabTemp);
+                            tailleTab = 0;
+                            tabTemp = new Array();
+                        }
+                        let case22 = parseInt(configurationBateau.charAt(j));
+                        tabTemp.push(case22);
+                        tailleTab ++;
+                    }
+                    j ++;
+
+                }
+                if(configurationBateauTabFinal.length == 9){
+                    let tmp = new Array(10).fill(0);
+                    configurationBateauTabFinal.push(tmp);
+
+                }
+                if(username == doc.usernameUtilisateur1){
+                    if(nombreCoupsJoueur1 > 0){
+                        reject({'Erreur':'Vous avez déjà rempli votre grille !','CodeHttp':400});
+                        return;
+                    }
+                    nombreCoupsJoueur1 ++;
+                    modelSalon.updateOne({title: req.body.title},{$set: {'plateau1Joueur1':configurationBateauTabFinal,'nombreCoupsJoueur1':nombreCoupsJoueur1}})
                     .catch(error => {
                         reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
                     });
-                    resolve({'Init':doc.usernameUtilisateur1,'CodeHttp':200});
+                    resolve({'Resultat':'Vos bateaux ont été placé. Ceux de votre adversaire aussi. Vous pouvez attaquer','CodeHttp':200});
                 }
                 else if(username == doc.usernameUtilisateur2){
-                    console.log('Vous êtes le user2 - '+doc.usernameUtilisateur2);
-                    modelSalon.updateOne({title: req.body.title},{$set: {'plateau1Joueur1':configurationBateau}})
+                    if(nombreCoupsJoueur2 > 0){
+                        reject({'Erreur':'Vous avez déjà rempli votre grille !','CodeHttp':400});
+                        return;
+                    }
+                    nombreCoupsJoueur2 ++;
+                    modelSalon.updateOne({title: req.body.title},{$set: {'plateau1Joueur2':configurationBateauTabFinal,'nombreCoupsJoueur2':nombreCoupsJoueur2}})
                     .catch(error => {
                         reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée','CodeHttp':500})
                     });
-                    resolve({'Init':doc.usernameUtilisateur2,'CodeHttp':200});
+                    resolve({'Resultat':'Vos bateaux ont été placé. Il ne reste plus qu\'à attendre votre adversaire','CodeHttp':200});
                 }
                 else{
                     reject({'Erreur':'Erreur interne veuillez nous excuser pour la gêne occasionnée',

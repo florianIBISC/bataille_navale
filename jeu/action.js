@@ -4,7 +4,7 @@ module.exports = {
     initialiser(req,res,body){
         process.initialiser(req,res)
         .then((result)=>{
-            res.status(result.CodeHttp).json(result.Init)
+            res.status(result.CodeHttp).json(result.Resultat)
         })
         .catch((err)=>{
             res.status(err.CodeHttp).json(err.Erreur)

@@ -91,6 +91,26 @@ module.exports = {
                 'CodeHTTP':200});
             }
         })
+    },
+
+    deleteUser: (req,res) => {
+        return new Promise((resolve,reject) => {
+            let token = req.headers["authorization"];
+            let username = jwtutils.getUserId(token).pseudo;
+            if(username == -1 || username == undefined || username == null){
+                reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
+                return;
+            }
+            models.deleteOne({'pseudo':username},(err,result) => {
+                if(err){
+                    reject({ 'Erreur': 'Erreur interne veuillez nous excuser','CodeHttp':500 });
+                }
+                else{
+                    resolve({'CodeHttp':204})
+                }
+            })
+            
+        })
     }
 
 
