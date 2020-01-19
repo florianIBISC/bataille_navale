@@ -19,6 +19,8 @@ Bataille navale avec Node et React Js
 | /jeu/initialiser | PUT | Le joueur envoie la position de ses bateaux | bateau (une matrice de taille 10 x 10 correspondant au plateau) |
 | /jeu/attaquer | PUT | Tir du jeu | coordonne (au format Ax où x ets un chiffre de 1 à 10) |
 | /jeu/attendre | GET | L'utilisateur demande s'il peut jouer | titre du salon |
+| ---- | ---- | ---- | ---- |
+| /imateapot | GET | Implémentation du célèbre code Http 418 |  |
 
 
 
