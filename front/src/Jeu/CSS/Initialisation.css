@@ -1,0 +1,46 @@
+.caseBataille{
+	width:20px;
+	height:20px;
+	text-align:center;
+	font-size: 100%;
+	background-color: #ffffff;
+}
+.caseBataille2{
+	width:20px;
+	height:20px;
+	text-align:center;
+	background-color: red;
+}
+.caseBataille3{
+	width:20px;
+	height:20px;
+	text-align:center;
+	background-color: blue;
+}
+.caseBataille4{
+	width:20px;
+	height:20px;
+	text-align:center;
+	background-color: green;
+}
+.caseBataille5{
+	width:20px;
+	height:20px;
+	text-align:center;
+	background-color: yellow;
+}
+
+#jeu{
+	margin-top: 5%;
+	text-align: center;
+	font-size: larger;
+}
+#plateau1{
+	display: inline-block;
+	margin-bottom: 5%;
+	border-width: 5px;
+}
+
+tr td{
+	border-width: 2px;
+}
