@@ -4,9 +4,15 @@ Dans le cadre de nos études et plus particulièrement du module AOS pour Archit
 nous avons décidé de réaliser une solution de bataille navale uniquement sous l'architecture REST.
 Bataille navale avec Node et React Js
 
-- [Sommaire](#crossref-rest-api)
-    - [Choix des technologies](#preamble)
+- [Sommaire](#Introduction)
+    - [Choix des technologies](#choix)
     - [Installation](#meta)
+    - [Routes de l'api](#meta)
+
+# Choix des technologies
+La réalisation de ce projet nous a demandé de nous interroger sur le choix des technologies à utiliser.
+Côté back notre choix c'est naturellement porté sur Node JS en excluant l'utilisation de la librairie socket.io
+afin de garantir l'utilisation des standards REST.  
 
 | /ressource | méthode | description | paramètres (query param si la méthode est un GET) |
 | ---------- | ------- | ----------- | ---------------- |
