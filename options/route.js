@@ -4,6 +4,7 @@ app.use(bodyParser.json());
 const action = require('./action');
 const jwutils = require("../utilisateur/jwt.utils");
 
-app.get('/option/classement',action.afficherClassement);
+app.all('/option/classement',action.afficherClassement);
+//app.get('/option/classement',action.afficherClassement);
 
 module.exports = app;

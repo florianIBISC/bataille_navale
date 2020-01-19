@@ -109,7 +109,7 @@ module.exports = {
             resolve({'CodeHttp':205,'Message':'Vous avez été rejoins par '+user2});
           }
           else{
-            resolve({'Message':'Il n\'y a pas d\'autres joueur encore :( ','CodeHttp':200})
+            resolve({'Erreur':'Il n\'y a pas d\'autres joueur encore :( ','CodeHttp':200})
           }
         })
       })

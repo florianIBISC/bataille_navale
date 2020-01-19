@@ -4,7 +4,7 @@ app.use(bodyParser.json());
 const action = require('./action');
 const jwutils = require("../utilisateur/jwt.utils");
 
-app.put('/motdepasseoublie',action.motdepasseoublie);
+app.all('/motdepasseoublie',action.motdepasseoublie);
 
 
 
