@@ -5,10 +5,11 @@ nous avons décidé de réaliser une solution de bataille navale uniquement sous
 Bataille navale avec Node et React Js
 
 - [Sommaire](#Introduction)
-    - [Choix des technologies](#choix)
-    - [Installation en locale](#meta)
-    - [Routes de l'api](#meta)
-    - [Utilisation de l'api](#meta)
+    - [Choix des technologies](#Choix des technologies)
+    - [Installation en locale](#Installation en locale)
+    - [Déploiement](#Déploiement)
+    - [Routes de l'api](#Routes de l'api)
+    - [Utilisation de l'api](#Utilisation de l'api)
 
 # Choix des technologies
 La réalisation de ce projet nous a demandé de nous interroger sur le choix des technologies à utiliser.
@@ -16,7 +17,7 @@ Côté back notre choix s'est naturellement porté sur Node JS en excluant l'uti
 afin de garantir l'utilisation des standards REST.
 Côté front nos délibérations se sont portés sur REACT JS. 
 
-#Installation en locale
+# Installation en locale
 Positionnez-vous à la racine du projet et lancez la comande npm i
 
 Il est possible que certains modules posent problèmes. Les plus récurrents sont : 
@@ -30,6 +31,16 @@ Les adresses locales sont :
 + http://localhost:3000 pour le front
 + http://localhost:8080 pour le back 
 
+# Déploiement
+Les deux projets ont été déployés sur un serveur privé. 
+L'adresse du front : http://dev01.freeboxos.fr:3000
+L'adresse du back : http://dev01.freeboxos.fr:8080
+
+* A noter : * le front n'offrant pas toutes les fonctionnalités du back nous vous recommandons d'utiliser postman
+pour tester le back. 
+
+
+# Routes de l'api
 
 | /ressource | méthode | description | paramètres (query param si la méthode est un GET) |
 | ---------- | ------- | ----------- | ---------------- |
@@ -52,5 +63,5 @@ Les adresses locales sont :
 | ---- | ---- | ---- | ---- |
 | /imateapot | GET | Implémentation du célèbre code Http 418 |  |
 
-
+# Utilisation de l'api
 
