@@ -40,7 +40,7 @@ module.exports = {
                 let tailleTab = 0;
                 let tabTemp = new Array();
                 while(j<configurationBateau.length){
-                    if(configurationBateau.charAt(j)=='1' || configurationBateau.charAt(j)=='0'){
+                    if(configurationBateau.charAt(j)=='1' || configurationBateau.charAt(j)=='0' || configurationBateau.charAt(j)=='2' ||configurationBateau.charAt(j)=='3' || configurationBateau.charAt(j)=='4'){
                         if(tailleTab == 11){
                             configurationBateauTabFinal.push(tabTemp);
                             tailleTab = 0;

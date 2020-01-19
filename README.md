@@ -42,6 +42,8 @@ pour tester le back.
 
 # Routes de l'api
 
+* A noter : * la connexion génère un token qui devra être mis dans les headers  Authorization des prochaines requêtes 
+
 | /ressource | méthode | description | paramètres (query param si la méthode est un GET) |
 | ---------- | ------- | ----------- | ---------------- |
 | /users/register | POST | Inscription d'un utilisateur | email, pseudo, password, nom, prenom, age |
@@ -49,19 +51,20 @@ pour tester le back.
 | /users/suppressionUtilisateur | DELETE | Suppression d'un utilisateur | le token suffit |
 | ---- | ---- | ---- | ---- |
 | /salon/creersalon | POST | Création d'un salon | title |
-| /salon/rejoindresalon | PUT | Un deuxième utilisateur rejoins le salon | title |
+| /salon/rejoindresalon | PUT | Un deuxième utilisateur rejoint le salon | title |
 | /salon/affichersalons | GET | Afficher les salons disponible | le token suffit |
-| /salon/salonplein | GET | Le joueur 1 demande au back si un deuxième utilisateur a rejoins | title |
+| /salon/salonplein | GET | Le joueur 1 demande au back si un deuxième utilisateur a rejoint | title |
 | ---- | ---- | ---- | ---- |
 | /option/classement | GET | Affiche le classement des utilisateurs par score | le token suffit |
 | ---- | ---- | ---- | ---- |
 | /motdepasseoublie | PUT | L'utilisateur a oublié sont mot de passe et le change. Il y aura un mail de rappel | email, password, confirmation |
 | ---- | ---- | ---- | ---- |
 | /jeu/initialiser | PUT | Le joueur envoie la position de ses bateaux | bateau (une matrice de taille 10 x 10 correspondant au plateau) |
-| /jeu/attaquer | PUT | Tir du jeu | coordonne (au format Ax où x ets un chiffre de 1 à 10) |
-| /jeu/attendre | GET | L'utilisateur demande s'il peut jouer | titre du salon |
+| /jeu/attaquer | PUT | Tir du jeu | coordonnee (au format lettre et chiffre ex : B4) |
+| /jeu/attendre | GET | L'utilisateur attends son tour | title |
 | ---- | ---- | ---- | ---- |
 | /imateapot | GET | Implémentation du célèbre code Http 418 |  |
 
 # Utilisation de l'api
+Cette section sert à aider celui qui osera tester l'api par le biai de requête destinées au back 
 
