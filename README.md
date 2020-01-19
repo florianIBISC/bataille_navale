@@ -1,5 +1,12 @@
-# bataille_navale
+# Bataille_navale
+## Introduction
+Dans le cadre de nos études et plus particulièrement du module AOS pour Architecture Orientée Service,
+nous avons décidé de réaliser une solution de bataille navale uniquement sous l'architecture REST.
 Bataille navale avec Node et React Js
+
+- [Sommaire](#crossref-rest-api)
+    - [Choix des technologies](#preamble)
+    - [Installation](#meta)
 
 | /ressource | méthode | description | paramètres (query param si la méthode est un GET) |
 | ---------- | ------- | ----------- | ---------------- |
