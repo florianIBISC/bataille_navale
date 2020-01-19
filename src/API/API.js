@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const headers = {
+/*const headers = {
     "Content-Type": "application/json"
-};
+};*/
 const burl = "http://192.168.194.198:8080"; //
 
 export default {
@@ -11,8 +11,6 @@ export default {
         {
             pseudo,
             password,
-        },{
-            headers: headers
         });
     }
 }
