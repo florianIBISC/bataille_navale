@@ -19,6 +19,8 @@ class Home extends React.Component {
         super(props);
         this.state = {
             amount: '',
+            email: '',
+            pseudo: '',
             password: '',
             weight: '',
             weightRange: '',
@@ -26,7 +28,11 @@ class Home extends React.Component {
         };
     }
 
-    //creer une fonction pour lier le back et le front au bouton
+    //creer une fonction pour lier le back et front au bouttons
+    send = async () =>{
+        const { email, pseudo, password} = this.state;
+        console.log(email+" "+pseudo+" "+password)
+    };
     render(){
         const handleChange = prop => event => {
             this.setState({ ...this.state, [prop]: event.target.value });
@@ -52,6 +58,9 @@ class Home extends React.Component {
                                 <TextField
                                     label="Email"
                                     id="simple-start-adornment"
+                                    type='text'
+                                    value={this.state.email}
+                                    onChange={handleChange('email')}
                                     className={clsx(useStyles.margin, useStyles.textField)}
                                 />
                             </div>
@@ -59,6 +68,9 @@ class Home extends React.Component {
                                 <TextField
                                     label="Login "
                                     id="simple-start-adornment2"
+                                    type='text'
+                                    value={this.state.pseudo}
+                                    onChange={handleChange('pseudo')}
                                     className={clsx(useStyles.margin, useStyles.textField)}
                                 />
                             </div>
@@ -84,11 +96,13 @@ class Home extends React.Component {
                                     />
                                 </FormControl>
                             </div>
-                            <Link to="/">
-                            <button type="submit" class="btn btn-primary btn-block">
-                                Creer
-                            </button>
-                            </Link>
+                            {/*<Link to="/">*/}
+                            <input type="button" class="btn btn-primary btn-block"
+                                onClick={this.send}
+                                value='Creer'
+                            >
+                            </input>
+                            {/*</Link>*/}
                         </form>
                     </div>
                 </div>

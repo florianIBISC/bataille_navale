@@ -12,6 +12,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import API from './../API/API'
+import axios from 'axios'
 
 import './CSS/bootstrap.css'
 import './CSS/style.css'
@@ -29,16 +30,39 @@ class Connexion extends React.Component {
         };
     }
     //creer une fonction pour lier le back et front au bouttons
+    test(){
+        /*var promise = new Promise(function(resolve, reject) {
+            resolve(true);
+        })
+        promise.then(bool => console.log('Bool is true'))*/
+        window.location = "/menu"
+    }
     send = async () =>{
         const { pseudo, password} = this.state;
         try{
             const {data} = await API.login(pseudo, password);
             localStorage.setItem("token", data.token);
-            console.log('Connceter')
+            window.location = "/menu"
+            console.log('Connecter')
         }catch (error){
             console.log('error')
         }
     };
+    onSubmit = (e) => {
+        e.preventDefault()
+        const {pseudo, password} = this.state;
+        axios.post('/', {pseudo: pseudo, password: password})
+            .then(function (response) {
+                if (response.data.redirect === '/menu') {
+                    window.location = "/menu"
+                } else if (response.data.redirect === '/'){
+                    window.location = "/"
+                }
+            })
+            .catch(function(error) {
+                window.location = "/"
+            })
+    }
     
     render(){
         const handleChange = prop => event => {
