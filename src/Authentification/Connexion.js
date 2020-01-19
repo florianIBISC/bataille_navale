@@ -21,8 +21,8 @@ class Connexion extends React.Component {
         super(props);
         this.state = {
             amount: '',
-            pseudo: 'jay91',
-            password: 'Jay91',
+            pseudo: '',
+            password: '',
             weight: '',
             weightRange: '',
             showPassword: false,
@@ -39,6 +39,7 @@ class Connexion extends React.Component {
             console.log('error')
         }
     };
+    
     render(){
         const handleChange = prop => event => {
             this.setState({ ...this.state, [prop]: event.target.value });
@@ -94,7 +95,7 @@ class Connexion extends React.Component {
                             </div>
                             {/*<Link to="/menu">*/}
                             <input type="button" class="btn btn-primary btn-block" style={{display: "inline-block", width: "50%"}} 
-                                onClick={this.send()}
+                                onClick={this.send}
                                 value='Connexion'
                             >    
                             </input>
