@@ -234,12 +234,14 @@ module.exports = {
             console.log('attenteTour - début de la méthode');
             let token = req.headers["authorization"];
             let username = jwutils.getUserId(token).pseudo;
+            let queryParam = req.query;
+            let titleSalon = queryParam.title;
 
             if(username == -1 || username == undefined || username == null){
                 reject({'Erreur':'Problème avec votre session veuillez vous reconnecter','CodeHttp':400});
             }
 
-            modelSalon.findOne({title: req.body.title,
+            modelSalon.findOne({title: titleSalon,
                 $or:[{usernameUtilisateur1: username},{usernameUtilisateur2: username}]},
                 function(err,doc){
                     console.log('attenteTour - modelSalon.findOne début');

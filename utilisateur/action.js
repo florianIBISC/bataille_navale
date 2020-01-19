@@ -19,8 +19,8 @@ module.exports = {
     },
 
     login(req, res) {
-        if(req.method != "GET"){
-            res.status(405).json({'Erreur':'Cette ressource n\'est disponible qu\'avec la méthode GET'});
+        if(req.method != "POST"){
+            res.status(405).json({'Erreur':'Cette ressource n\'est disponible qu\'avec la méthode POST'});
             return;
         }
         process.login(req, res)

@@ -11,6 +11,7 @@ module.exports = {
           if(token == null || token == undefined || token==-1){
               reject({'Erreur':'Votre session a expiré','CodeHTTP':401});
           }
+          if(true == false){}
           else{
               modelUser.find({}, function(err,utilisateurs){
                   if(err){

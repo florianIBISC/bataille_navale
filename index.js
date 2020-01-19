@@ -5,6 +5,26 @@ const mongoose = require("mongoose");
 const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 
+var cors = require('cors');
+app.use(cors());
+
+
+//Set up a whitelist and check against it:
+var whitelist = ['http://localhost:27017/%27,%27http://localhost:8080%27,%27http://localhost:3000'];
+var corsOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
+  // origin: function (origin, callback) {
+  //   if (whitelist.indexOf(origin) !== -1) {
+  //     callback(null, true)
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'))
+  //   }
+  // },
+  // methods:'GET', 'PUT', 'POST',
+}
+// Then pass them to cors:
+app.use(cors(corsOptions));
 
 mongoose.connect('mongodb://localhost/batailleNavale',
     {useNewUrlParser:true,useFindAndModify:false,useUnifiedTopology:true})

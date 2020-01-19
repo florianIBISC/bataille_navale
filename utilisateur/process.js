@@ -59,6 +59,7 @@ module.exports = {
     //se connecter
     login: (req, res) => {
         return new Promise((resolve, reject) => {
+            console.log('Login method ');
             models.find({ pseudo: req.body.pseudo }).then(user => {
                 // si l'user existe
                 if (user.length == 1) {
