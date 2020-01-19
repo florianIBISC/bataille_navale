@@ -6,13 +6,30 @@ Bataille navale avec Node et React Js
 
 - [Sommaire](#Introduction)
     - [Choix des technologies](#choix)
-    - [Installation](#meta)
+    - [Installation en locale](#meta)
     - [Routes de l'api](#meta)
+    - [Utilisation de l'api](#meta)
 
 # Choix des technologies
 La réalisation de ce projet nous a demandé de nous interroger sur le choix des technologies à utiliser.
-Côté back notre choix c'est naturellement porté sur Node JS en excluant l'utilisation de la librairie socket.io
-afin de garantir l'utilisation des standards REST.  
+Côté back notre choix s'est naturellement porté sur Node JS en excluant l'utilisation de la librairie socket.io
+afin de garantir l'utilisation des standards REST.
+Côté front nos délibérations se sont portés sur REACT JS. 
+
+#Installation en locale
+Positionnez-vous à la racine du projet et lancez la comande npm i
+
+Il est possible que certains modules posent problèmes. Les plus récurrents sont : 
+react-router-dom / @material-ui/core / @material-ui/icons / clsx / axios / bcrypt.
+N'hésitez pas à les installer un à un.
+
+Rendez-vous à la racine du projet back et lancez : node index.js
+Rendez-vous à la racine du projet front et lancez : npm start
+
+Les adresses locales sont : 
++ http://localhost:3000 pour le front
++ http://localhost:8080 pour le back 
+
 
 | /ressource | méthode | description | paramètres (query param si la méthode est un GET) |
 | ---------- | ------- | ----------- | ---------------- |
